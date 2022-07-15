@@ -1,6 +1,6 @@
 import { ConnectionOptions } from 'typeorm';
 
-export const ormConfig: ConnectionOptions = {
+const ormConfig: ConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -15,3 +15,4 @@ export const ormConfig: ConnectionOptions = {
     migrationsDir: 'src/migrations',
   },
 };
+export default ormConfig;

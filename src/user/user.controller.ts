@@ -27,4 +27,9 @@ export class UserController {
   async getAllUsers(): Promise<any> {
     return ['user2'];
   }
+
+  // @Post('user/login')
+  // async login(@Body('user') userDto: CreateUserDto<Omit<CreateUserDto, 'username'>>) {
+  //   return
+  // }
 }
