@@ -4,6 +4,7 @@ import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -17,7 +18,14 @@ export class UserService {
   }
 
   generateJwt(user: UserEntity): string {
-    return 'fooo';
+    return sign(
+      {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
+      'iLoveNitzan',
+    );
   }
   buildUserResponse(user: UserEntity): any {
     return {
