@@ -4,6 +4,7 @@ import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
+import { UserResponseInterface } from "./types/userResponse.interface";
 
 @Injectable()
 export class UserService {
@@ -27,7 +28,7 @@ export class UserService {
       'iLoveNitzan',
     );
   }
-  buildUserResponse(user: UserEntity): any {
+  buildUserResponse(user: UserEntity): UserResponseInterface {
     return {
       user: {
         ...user,

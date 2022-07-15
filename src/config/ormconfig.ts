@@ -15,3 +15,5 @@ export const ormConfig: ConnectionOptions = {
     migrationsDir: 'src/migrations',
   },
 };
+console.log(ormConfig.migrations, 'migrations');
+console.log(ormConfig.entities, 'entities');
