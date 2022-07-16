@@ -3,14 +3,13 @@ import { IsNotEmpty, Max } from 'class-validator';
 export class CreateArticleDto {
   @IsNotEmpty()
   @Max(150)
-  title: string;
+  readonly title: string;
 
   @IsNotEmpty()
-  description: string;
+  readonly description: string;
 
   @IsNotEmpty()
-  body: string;
+  readonly body: string;
 
-  @IsNotEmpty()
-  tagList: string[];
+  readonly tagList?: string[];
 }
