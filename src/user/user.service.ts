@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UserDto, LoginUserDto } from './dto/user.dto';
+import { UserDto, LoginUserDto, UserUpdateDto } from "./dto/user.dto";
 import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -59,6 +59,12 @@ export class UserService {
 
   async findUserById(id: number): Promise<UserEntity> {
     return await this.userRepository.findOne(id);
+  }
+
+  async updateUser(forUpdate: UserUpdateDto, id: number): Promise<UserEntity> {
+    const user = await this.findUserById(id);
+    Object.assign(user, forUpdate);
+    return await this.userRepository.save(user);
   }
 
   generateJwt(user: UserEntity): string {

@@ -3,12 +3,13 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto, LoginUserDto } from './dto/user.dto';
+import { UserDto, LoginUserDto, UserUpdateDto } from './dto/user.dto';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { UserDecorator } from './decorators/user.decorator';
 import { UserEntity } from './user.entity';
@@ -41,6 +42,19 @@ export class UserController {
   async getCurrentUser(
     @UserDecorator() user: UserEntity,
   ): Promise<UserResponseInterface> {
+    return this.userService.buildUserResponse(user);
+  }
+
+  @Put('user')
+  @UseGuards(AuthGuard)
+  async updateCurrentUser(
+    @UserDecorator('id') currentUserId: number,
+    @Body('user') userUpdateDto: UserUpdateDto,
+  ): Promise<UserResponseInterface> {
+    const user = await this.userService.updateUser(
+      userUpdateDto,
+      currentUserId,
+    );
     return this.userService.buildUserResponse(user);
   }
 }
