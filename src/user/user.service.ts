@@ -57,8 +57,8 @@ export class UserService {
     return userByEmail;
   }
 
-  async getCurrentUser() {
-    return;
+  async findUserById(id: number): Promise<UserEntity> {
+    return await this.userRepository.findOne(id);
   }
 
   generateJwt(user: UserEntity): string {
@@ -78,8 +78,5 @@ export class UserService {
         token: this.generateJwt(user),
       },
     };
-  }
-  findUserById(id: number): Promise<UserEntity> {
-    return this.userRepository.findOne(id);
   }
 }

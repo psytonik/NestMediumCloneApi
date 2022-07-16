@@ -14,16 +14,16 @@ export class AuthMiddleware implements NestMiddleware {
       next();
       return;
     }
+
     const token = req.headers.authorization.split(' ')[1];
+
     try {
-      const decode = await verify(token, 'iLoveNitzan');
-      console.log(decode);
-      // req.user = await this.userService.findUserById(decode.id);
+      const decode: any = verify(token, 'iLoveNitzan');
+      req.user = await this.userService.findUserById(decode.id);
       next();
     } catch {
       req.user = null;
       next();
     }
-    next();
   }
 }
