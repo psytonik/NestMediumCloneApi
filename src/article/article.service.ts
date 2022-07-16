@@ -5,7 +5,7 @@ import { CreateArticleDto } from './dto/article.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
-import { ArticleResponseInterface } from "./types/articleResponse.interface";
+import { ArticleResponseInterface } from './types/articleResponse.interface';
 
 @Injectable()
 export class ArticleService {
@@ -22,7 +22,7 @@ export class ArticleService {
     if (!newArticle.tagList) {
       newArticle.tagList = [];
     }
-    newArticle.slug = this.getSlug(newArticle.title);
+    newArticle.slug = ArticleService.getSlug(newArticle.title);
     newArticle.author = currentUser;
     return await this.articleRepository.save(newArticle);
   }
@@ -30,7 +30,8 @@ export class ArticleService {
   buildArticleResponse(article: ArticleEntity): ArticleResponseInterface {
     return { article };
   }
-  private getSlug(title: string): string {
+
+  private static getSlug(title: string): string {
     return (
       slugify(title, { lower: true }) +
       '-' +

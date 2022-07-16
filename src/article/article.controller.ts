@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/article.dto';
-import { ArticleEntity } from './article.entity';
 import { AuthGuard } from '../user/guards/auth.guard';
 import { UserDecorator } from '../user/decorators/user.decorator';
 import { UserEntity } from '../user/user.entity';
