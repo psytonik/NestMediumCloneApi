@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeUpdate } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeUpdate,
+  ManyToOne,
+} from 'typeorm';
+import { UserEntity } from '../user/user.entity';
 
 @Entity({ name: 'articles' })
 export class ArticleEntity {
@@ -34,10 +41,12 @@ export class ArticleEntity {
   @Column({ default: 0 })
   favoritesCount: number;
 
-  // @Column()
+  // @OneToMany()
   // favorited: boolean;
 
-  // author: {
+  @ManyToOne(() => UserEntity, (user) => user.articles)
+  author: UserEntity;
+  //   {
   //   username: string;
   //   bio: string;
   //   image: string;
