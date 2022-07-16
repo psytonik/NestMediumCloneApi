@@ -13,7 +13,7 @@ export class UserEntity {
   bio: string;
   @Column({ default: '' })
   image: string;
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @BeforeInsert()

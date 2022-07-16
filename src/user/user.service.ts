@@ -1,10 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/createUser.dto';
+import { UserDto, LoginUserDto } from './dto/user.dto';
 import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { sign } from 'jsonwebtoken';
 import { UserResponseInterface } from './types/userResponse.interface';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,7 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(dto: CreateUserDto): Promise<UserEntity> {
+  async createUser(dto: UserDto): Promise<UserEntity> {
     const userByEmail = await this.userRepository.findOne({
       email: dto.email,
     });
@@ -29,6 +30,35 @@ export class UserService {
     const newUser = new UserEntity();
     Object.assign(newUser, dto);
     return await this.userRepository.save(newUser);
+  }
+
+  async loginUser(dto: LoginUserDto): Promise<UserEntity> {
+    const userByEmail = await this.userRepository.findOne(
+      { email: dto.email },
+      {
+        select: ['id', 'username', 'bio', 'image', 'password', 'email'],
+      },
+    );
+    if (!userByEmail) {
+      throw new HttpException(
+        'Credentials are not valid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    const isPasswordCorrect = await compare(dto.password, userByEmail.password);
+
+    if (!isPasswordCorrect) {
+      throw new HttpException(
+        'Credentials are not valid',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    delete userByEmail.password;
+    return userByEmail;
+  }
+
+  async getCurrentUser() {
+    return;
   }
 
   generateJwt(user: UserEntity): string {
@@ -48,5 +78,8 @@ export class UserService {
         token: this.generateJwt(user),
       },
     };
+  }
+  findUserById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne(id);
   }
 }

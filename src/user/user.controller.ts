@@ -5,31 +5,39 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/createUser.dto';
+import { UserDto, LoginUserDto } from './dto/user.dto';
 import { UserResponseInterface } from './types/userResponse.interface';
+import { ExpressRequestInterface } from '../types/expressRequest.interface';
 
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('user')
+  @Post('users')
   @UsePipes(new ValidationPipe())
   async createUser(
-    @Body('user') createUserDto: CreateUserDto,
+    @Body('user') createUserDto: UserDto,
   ): Promise<UserResponseInterface> {
     const user = await this.userService.createUser(createUserDto);
     return this.userService.buildUserResponse(user);
   }
 
-  @Get('users')
-  async getAllUsers(): Promise<any> {
-    return ['user2'];
+  @Post('users/login')
+  @UsePipes(new ValidationPipe())
+  async login(
+    @Body('user') loginUserDto: LoginUserDto,
+  ): Promise<UserResponseInterface> {
+    const user = await this.userService.loginUser(loginUserDto);
+    return this.userService.buildUserResponse(user);
   }
 
-  // @Post('user/login')
-  // async login(@Body('user') userDto: CreateUserDto<Omit<CreateUserDto, 'username'>>) {
-  //   return
-  // }
+  @Get('user')
+  async getCurrentUser(
+    @Req() request: ExpressRequestInterface,
+  ): Promise<UserResponseInterface> {
+    return this.userService.buildUserResponse(request.user);
+  }
 }
