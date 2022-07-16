@@ -5,6 +5,7 @@ import { ArticleEntity } from './article.entity';
 import { AuthGuard } from '../user/guards/auth.guard';
 import { UserDecorator } from '../user/decorators/user.decorator';
 import { UserEntity } from '../user/user.entity';
+import { ArticleResponseInterface } from './types/articleResponse.interface';
 
 @Controller('articles')
 export class ArticleController {
@@ -25,7 +26,11 @@ export class ArticleController {
   async createArticle(
     @UserDecorator() currentUser: UserEntity,
     @Body('article') createArticleDto: CreateArticleDto,
-  ): Promise<any> {
-    return this.articleService.createArticle(currentUser, createArticleDto);
+  ): Promise<ArticleResponseInterface> {
+    const article = await this.articleService.createArticle(
+      currentUser,
+      createArticleDto,
+    );
+    return this.articleService.buildArticleResponse(article);
   }
 }
