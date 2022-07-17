@@ -8,7 +8,7 @@ const ormConfig: ConnectionOptions = {
   password: '123',
   database: 'blogapi',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-  logging: true,
+  // logging: true,
   synchronize: false,
   migrations: [__dirname + '/../migrations/**/*[.ts,.js]'],
   cli: {

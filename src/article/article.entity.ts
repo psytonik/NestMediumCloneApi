@@ -44,12 +44,6 @@ export class ArticleEntity {
   // @OneToMany()
   // favorited: boolean;
 
-  @ManyToOne(() => UserEntity, (user) => user.articles)
+  @ManyToOne(() => UserEntity, (user) => user.articles, { eager: true })
   author: UserEntity;
-  //   {
-  //   username: string;
-  //   bio: string;
-  //   image: string;
-  //   following: string;
-  // };
 }
