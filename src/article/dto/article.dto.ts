@@ -1,8 +1,7 @@
-import { IsNotEmpty, Max } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-export class CreateArticleDto {
+export class ArticleDto {
   @IsNotEmpty()
-  @Max(150)
   readonly title: string;
 
   @IsNotEmpty()
