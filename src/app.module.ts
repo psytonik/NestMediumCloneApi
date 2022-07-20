@@ -2,16 +2,18 @@ import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import ormconfig from './config/ormconfig';
+import ormConfig from './config/ormconfig';
 import { AuthMiddleware } from './middleware/auth.middleware';
 import { ArticleModule } from './article/article.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(ormconfig),
+    TypeOrmModule.forRoot(ormConfig),
     TagModule,
     UserModule,
     ArticleModule,
+    ProfileModule,
   ],
 })
 export class AppModule {

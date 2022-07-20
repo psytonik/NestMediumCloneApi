@@ -1,7 +1,7 @@
-import ormconfig from './ormconfig';
+import ormConfig from './ormconfig';
 
 const ormSeedConfig = {
-  ...ormconfig,
+  ...ormConfig,
   migrations: [__dirname + '/../seeds/**/*[.ts,.js]'],
   cli: {
     migrationsDir: 'src/seeds',
