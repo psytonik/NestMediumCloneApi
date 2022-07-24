@@ -4,8 +4,11 @@ import {
   Column,
   BeforeUpdate,
   ManyToOne,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
+import { CommentsEntity } from './comments.entity';
 
 @Entity({ name: 'articles' })
 export class ArticleEntity {
@@ -41,8 +44,11 @@ export class ArticleEntity {
   @Column({ default: 0 })
   favoritesCount: number;
 
-  // @OneToMany()
-  // favorited: boolean;
+  @OneToMany((type) => CommentsEntity, (comment) => comment.article, {
+    eager: true,
+  })
+  @JoinColumn()
+  comments: CommentsEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.articles, { eager: true })
   author: UserEntity;

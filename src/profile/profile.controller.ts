@@ -10,10 +10,14 @@ import { ProfileService } from './profile.service';
 import { ProfileResponseInterface } from './types/profileResponse.interface';
 import { UserDecorator } from '../user/decorators/user.decorator';
 import { AuthGuard } from '../user/guards/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('profiles')
 @Controller('profiles')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
+
   @Get(':username')
   async getProfile(
     @Param('username') profileUserName: string,

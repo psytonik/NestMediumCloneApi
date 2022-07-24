@@ -8,8 +8,10 @@ import slugify from 'slugify';
 import {
   AllArticlesResponseInterface,
   ArticleResponseInterface,
+  CommentsResponseInterface,
 } from './types/articleResponse.interface';
 import { FollowEntity } from '../profile/follow.entity';
+import { CommentsEntity } from './comments.entity';
 
 @Injectable()
 export class ArticleService {
@@ -20,33 +22,17 @@ export class ArticleService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(FollowEntity)
     private readonly followRepository: Repository<FollowEntity>,
+    @InjectRepository(CommentsEntity)
+    private readonly commentsRepository: Repository<CommentsEntity>,
   ) {}
-
-  async createArticle(
-    currentUser: UserEntity,
-    createArticleDto: ArticleDto,
-  ): Promise<ArticleEntity> {
-    const newArticle = new ArticleEntity();
-    Object.assign(newArticle, createArticleDto);
-    if (!newArticle.tagList) {
-      newArticle.tagList = [];
-    }
-    newArticle.slug = ArticleService.getSlug(newArticle.title);
-    newArticle.author = currentUser;
-    return await this.articleRepository.save(newArticle);
-  }
 
   async findArticleBySlug(slug: string): Promise<ArticleEntity> {
     return await this.articleRepository.findOne({ slug });
   }
 
-  async deleteSingleArticle(
-    slug: string,
-    currentUser: number,
-  ): Promise<DeleteResult> {
-    const articleToDelete = await this.findAndCheck(slug, currentUser);
-    await this.articleRepository.remove(articleToDelete);
-    return { raw: [], affected: 200 };
+  async findComments(slug): Promise<CommentsResponseInterface> {
+    const article = await this.articleRepository.findOne({ slug });
+    return { comments: article.comments };
   }
 
   async getAllArticles(
@@ -114,6 +100,20 @@ export class ArticleService {
     return { articles: articlesWithFavorites, articlesCount };
   }
 
+  async createArticle(
+    currentUser: UserEntity,
+    createArticleDto: ArticleDto,
+  ): Promise<ArticleEntity> {
+    const newArticle = new ArticleEntity();
+    Object.assign(newArticle, createArticleDto);
+    if (!newArticle.tagList) {
+      newArticle.tagList = [];
+    }
+    newArticle.slug = ArticleService.getSlug(newArticle.title);
+    newArticle.author = currentUser;
+    return await this.articleRepository.save(newArticle);
+  }
+
   async updateArticle(
     currentUser: number,
     slug: string,
@@ -124,11 +124,20 @@ export class ArticleService {
     return await this.articleRepository.save(article);
   }
 
+  async deleteSingleArticle(
+    slug: string,
+    currentUser: number,
+  ): Promise<DeleteResult> {
+    const articleToDelete = await this.findAndCheck(slug, currentUser);
+    await this.articleRepository.remove(articleToDelete);
+    return { raw: [], affected: 200 };
+  }
+
   async addArticleToFavoriteService(
     currentUserId: number,
     slug: string,
   ): Promise<ArticleEntity> {
-    const article = await this.findAndCheck(slug, currentUserId);
+    const article = await this.findArticleBySlug(slug);
     const user = await this.userRepository.findOne(currentUserId, {
       relations: ['favorites'],
     });
@@ -149,7 +158,7 @@ export class ArticleService {
     currentUserId: number,
     slug: string,
   ): Promise<ArticleEntity> {
-    const article = await this.findAndCheck(slug, currentUserId);
+    const article = await this.findArticleBySlug(slug);
     const user = await this.userRepository.findOne(currentUserId, {
       relations: ['favorites'],
     });

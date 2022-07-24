@@ -6,7 +6,6 @@ import {
   Put,
   UseGuards,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto, LoginUserDto, UserUpdateDto } from './dto/user.dto';
@@ -14,13 +13,24 @@ import { UserResponseInterface } from './types/userResponse.interface';
 import { UserDecorator } from './decorators/user.decorator';
 import { UserEntity } from './user.entity';
 import { AuthGuard } from './guards/auth.guard';
+import { BackEndValidationPipe } from '../shared/pipes/backEndValidation.pipe';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('user')
 @Controller()
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('user')
-  @UsePipes(new ValidationPipe())
+  @ApiBody({ type: UserDto })
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  @UsePipes(new BackEndValidationPipe())
   async createUser(
     @Body('user') createUserDto: UserDto,
   ): Promise<UserResponseInterface> {
@@ -29,10 +39,13 @@ export class UserController {
   }
 
   @Post('user/login')
-  @UsePipes(new ValidationPipe())
+  @ApiBody({ type: LoginUserDto })
+  @ApiOkResponse({ status: 200, type: UserEntity })
+  @UsePipes(new BackEndValidationPipe())
   async login(
     @Body('user') loginUserDto: LoginUserDto,
   ): Promise<UserResponseInterface> {
+    console.log(loginUserDto);
     const user = await this.userService.loginUser(loginUserDto);
     return this.userService.buildUserResponse(user);
   }
